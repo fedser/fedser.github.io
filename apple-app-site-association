@@ -1,16 +1,11 @@
 {
-   "applinks": {
-       "apps": [ ],
-       "details": [
-           {
-               "appID": "YE9F87F2WD.com.fielmann.kls",
-               "paths": [
-                   "reset/*" 
-                   "activate/*" 
-                   "mylenses/*" 
-                   "login/*" 
-               ]
-           }
-       ]
-   }
+	"applinks": {
+		"apps": [],
+		"details": [{
+			"appID": "YE9F87F2WD.com.fielmann.kls",
+			"paths": [
+				"*"
+			]
+		}]
+	}
 }
