@@ -1,11 +1,15 @@
 {
-	"applinks": {
-		"apps": [],
-		"details": [{
-			"appID": "YE9F87F2WD.com.fielmann.kls",
-			"paths": [
-				"*"
-			]
-		}]
-	}
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "YE9F87F2WD.com.fielmann.kls",
+        "paths": [ 
+        	"/reset/*"]
+        "paths": [
+          "*"
+        ]
+      }
+    ]
+  }
 }
