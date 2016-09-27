@@ -116,7 +116,8 @@
                         if (options.iosAppStore) {
                             urls.push(options.iosAppStore);
                         }
-                        tryToOpenInMultiplePhases(urls);
+//                         tryToOpenInMultiplePhases(urls);
+						window.location = options.iosApp;
                     } else {
                         window.location = options.web;
                     }
