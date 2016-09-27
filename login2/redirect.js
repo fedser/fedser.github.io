@@ -118,7 +118,7 @@
                             urls.push(options.iosAppStore);
                         }
 //                         tryToOpenInMultiplePhases(urls);
-						confirm("my link = " + options.iosApp);
+						confirm("my link urls = " + urls);
 						window.location = options.iosApp;
                     } else {
 	                    confirm("Confirm NO");
