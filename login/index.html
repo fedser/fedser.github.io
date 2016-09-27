@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <script type="text/javascript" src="conf.js"></script>
+    <script type="text/javascript" src="redirect.js"></script>
+    <link rel="stylesheet" type="text/css" href="default.css"/>
+</head>
+<body>
+<script>
+
+
+    // You have the whole queryString ready for you here in a key->value form.
+    // In the edge case where there are multiple values, the value is an array.
+    var qs = AppRedirect.queryString;
+
+    var host = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
+    var klsUrl = webUrl ? webUrl : host;
+
+    // Here we initiate the redirect process
+    AppRedirect.redirect({
+
+        iosApp: 'klsapp://login',
+
+        iosAppStore: iosStore + '?mt=8&message=' + qs['message'],
+
+        // For this, your app need to have category filter: android.intent.category.BROWSABLE
+        android: {
+            'host': 'login', // Host/path/querystring part in a custom scheme URL
+            // 'action': '', // Equivalent to ACTION in INTENTs
+            // 'category': '', // Equivalent to CATEGORY in INTENTs
+            // 'component': '', // Equivalent to COMPONENT in INTENTs
+            'scheme': 'klsapp', // Scheme part in a custom scheme URL
+            'package': 'com.kls_fielmann.klapp', // Package name in Play store
+            'fallback': androidStore
+        },
+
+        web: klsUrl + '/'
+
+    });
+
+</script>
+</body>
+</html>
