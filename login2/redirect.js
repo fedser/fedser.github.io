@@ -105,8 +105,8 @@
                             .replace('undefined', '3_2').replace('_', '.').replace('_', '')
                     ) || false;
 
-				confirm("my Version = " + iOSversion);
-				confirm("my VersionRes = " + (iOSversion && iOSversion < 9));
+				confirm("my Version2 = " + iOSversion);
+				confirm("my VersionRes2 = " + (iOSversion && iOSversion < 9));
                 if (iOSversion && iOSversion < 9) {
                     var confirmBox = confirm("Möchten Sie den App Store öffnen1?");
                     if (confirmBox == true) {
