@@ -108,8 +108,9 @@
 				confirm("my Version = " + iOSversion);
 				confirm("my VersionRes = " + (iOSversion && iOSversion < 9));
                 if (iOSversion && iOSversion < 9) {
-                    var confirmBox = confirm("Möchten Sie den App Store öffnen?");
+                    var confirmBox = confirm("Möchten Sie den App Store öffnen1?");
                     if (confirmBox == true) {
+                    	confirm("my link = " + options.iosApp);
                         if (options.iosApp) {
                             urls.push(options.iosApp);
                         }
@@ -120,10 +121,11 @@
 						confirm("my link = " + options.iosApp);
 						window.location = options.iosApp;
                     } else {
+	                    confirm("Confirm NO");
                         window.location = options.web;
                     }
                 } else {
-                    var confirmBox = confirm("Möchten Sie den App Store öffnen?");
+                    var confirmBox = confirm("Möchten Sie den App Store öffnen2?");
                     if (confirmBox == true) {
                         window.location = options.iosAppStore;
                     } else {
