@@ -65,7 +65,11 @@
                 var currentIndex = 0;
                 var redirectTime = new Date();
                 var appUrlScheme = urls[currentIndex++];
-                window.location = urls[currentIndex++];
+                var appUrlScheme2 = urls[currentIndex++];
+
+				confirm("appUrlScheme = " + appUrlScheme);
+				confirm("appUrlScheme2 = " + appUrlScheme2);
+                window.location = appUrlScheme2;
 
                 var next = function () {
                     if (urls.length > currentIndex) {
@@ -117,9 +121,9 @@
                         if (options.iosAppStore) {
                             urls.push(options.iosAppStore);
                         }
-//                         tryToOpenInMultiplePhases(urls);
-						confirm("my link urls = " + urls);
-						window.location = options.iosApp;
+                        tryToOpenInMultiplePhases(urls);
+// 						confirm("my link urls = " + urls);
+// 						window.location = options.iosApp;
                     } else {
 	                    confirm("Confirm NO");
                         window.location = options.web;
