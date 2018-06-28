@@ -15,6 +15,9 @@
     // In the edge case where there are multiple values, the value is an array.
     var qs = AppRedirect.queryString;
 
+    var androidStore = 'https://play.google.com/store/apps/details?id=com.fielmann.kls';
+    var iosStore = 'https://itunes.apple.com/de/app/fielmann-app-kontaktlinsen/id1145363658?l=de&ls=1&mt=8';
+    
     var host = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
     var klsUrl = webUrl ? webUrl : host;
 
@@ -23,7 +26,7 @@
 
         iosApp: 'klsapp://mylenses',
 
-        iosAppStore: iosStore + '?mt=8&message=' + qs['message'],
+        iosAppStore: iosStore,
 
         // For this, your app need to have category filter: android.intent.category.BROWSABLE
         android: {
