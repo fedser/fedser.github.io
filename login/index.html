@@ -23,13 +23,13 @@
     // Here we initiate the redirect process
     AppRedirect.redirect({
 
-        iosApp: 'klsapp://activate',
+        iosApp: 'klsapp://login',
 
         iosAppStore: iosStore,
 
         // For this, your app need to have category filter: android.intent.category.BROWSABLE
         android: {
-            'host': 'activate', // Host/path/querystring part in a custom scheme URL
+            'host': 'login', // Host/path/querystring part in a custom scheme URL
             // 'action': '', // Equivalent to ACTION in INTENTs
             // 'category': '', // Equivalent to CATEGORY in INTENTs
             // 'component': '', // Equivalent to COMPONENT in INTENTs
