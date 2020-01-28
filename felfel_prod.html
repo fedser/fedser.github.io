@@ -1,0 +1,36 @@
+<!DOCTYPE html> 
+<html> 
+	<head> 
+		<title>Javascript open link without click</title> 
+		<style> 
+			.gfg { 
+				text-align:center; 
+				font-size:40px; 
+				font-weight:bold; 
+				color:green; 
+			} 
+		</style> 
+		<script> 
+			function openLoginFunction() {
+				setTimeout(function(){
+						window.open("https://felfel.page.link/open_app", "_top");
+					}, 3000);
+				
+			} 
+			
+		</script> 
+	</head> 
+	<body> 
+	<script> 
+			
+			window.onload = function() {
+					  openLoginFunction()
+				};
+				
+		</script> 
+		<div class = "gfg" onmouseover = "openLoginFunction()"> 
+				Open login link 
+		</div> 
+	</body> 
+</html>					 
+
