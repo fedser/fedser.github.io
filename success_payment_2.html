@@ -5,8 +5,10 @@
 <body>
 Оплата прошла успешно!
 
+<a id="link" target="_parent" href="outside_domain.html"></a>
+
 <script type="text/javascript">
-    window.parent.callAppSuccessPayment("success_payment","*");
+    document.getElementById('link').click();
 </script>
 
 </body>
