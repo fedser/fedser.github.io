@@ -1,14 +1,16 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<script type="text/javascript">
+    window.parent.postMessage("success_payment_2","*");
+</script>
+
 </head>
 <body>
 Оплата прошла успешно!
 
-<a id="link" target="_parent" href="outside_domain.html"></a>
-
 <script type="text/javascript">
-    document.getElementById('link').click();
+    window.parent.postMessage("success_payment","*");
 </script>
 
 </body>
