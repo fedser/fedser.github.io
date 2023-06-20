@@ -3,15 +3,15 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"version.json": "2e9d0d54cbe0844c4d14bad4266838d3",
-"index.html": "c435a048bb9ac1f46faa000069cf81d6",
-"/": "c435a048bb9ac1f46faa000069cf81d6",
+const RESOURCES = {"version.json": "efdfda45d2ac60520f0f32c1d02900da",
+"index.html": "e7249d5388198c29f12d36f0d1ce23c5",
+"/": "e7249d5388198c29f12d36f0d1ce23c5",
 "main.dart.js": "f61ac9c827a4a17d83a8b5b8f4c34a6b",
 "success_payment.html": "9181608cca0e9db2270031ff9114eec7",
 "failed_payment.html": "6c87de2d10b55cb6a618bf725e7c890c",
 "flutter.js": "6fef97aeca90b426343ba6c5c9dc5d4a",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
-"flutter_service_worker.js.orig": "7b927f65f0f044ac435f77874a066226",
+"flutter_service_worker.js.orig": "20511cd2365f51893a6cb410420a5cc3",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
@@ -380,11 +380,21 @@ const RESOURCES = {"version.json": "2e9d0d54cbe0844c4d14bad4266838d3",
 "canvaskit/skwasm.worker.js": "19659053a277272607529ef87acf9d8a"};
 // The application shell files that are downloaded before a service worker can
 // start.
+const CORE = ["main.dart.js",
+"index.html",
+"assets/AssetManifest.json",
+"assets/FontManifest.json"];
 
-// Removed this section because the files are downloaded concurrently, so we don't check
-
-var IN_PROCESSING_REQUESTS = {};
-
+// During install, the TEMP cache is populated with the application shell files.
+self.addEventListener("install", (event) => {
+  self.skipWaiting();
+  return event.waitUntil(
+    caches.open(TEMP).then((cache) => {
+      return cache.addAll(
+        CORE.map((value) => new Request(value, {'cache': 'reload'})));
+    })
+  );
+});
 // During activate, the cache is populated with the temp files downloaded in
 // install. If this service worker is upgrading from one with a saved
 // MANIFEST, then use this to retain unchanged resource files.
@@ -474,20 +484,10 @@ self.addEventListener("fetch", (event) => {
       return cache.match(event.request).then((response) => {
         // Either respond with the cached resource, or perform a fetch and
         // lazily populate the cache only if the resource was successfully fetched.
-        if (response) {
-          return response;
-        }
-
-        if (IN_PROCESSING_REQUESTS[key]) {
-          return IN_PROCESSING_REQUESTS[key].clone();
-        }
-
-        return fetch(event.request).then((response) => {
+        return response || fetch(event.request).then((response) => {
           if (response && Boolean(response.ok)) {
-            cache.put(event.request, response.clone())
-                 .then(() => delete IN_PROCESSING_REQUESTS[key]);
+            cache.put(event.request, response.clone());
           }
-          IN_PROCESSING_REQUESTS[key] = response.clone();
           return response;
         });
       })
