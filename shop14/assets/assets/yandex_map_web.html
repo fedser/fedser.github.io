@@ -19,6 +19,12 @@
 
       function startInit() {
         // console.log(`coord: ${department.lat}, ${department.lon}`);
+        createMap({
+          center: [56.79861999, 53.193641],
+          zoom: 17,
+          controls: ["zoomControl"],
+        });
+        /*
         ymaps.geolocation
           .get({
             provider: "yandex",
@@ -37,6 +43,7 @@
               // createMap(mapState);
 
               var coords = res.geoObjects.get(0).geometry.getCoordinates();
+              // console.log(`qwerty coord1: ${coords[0]}, ${coords[1]}`);
               createMap({
                 center: coords,
                 zoom: 17,
@@ -55,6 +62,7 @@
               });
             }
           );
+          */
       }
 
       function tryGetLocationInternal() {
@@ -247,16 +255,16 @@
             objectManager.objects.setObjectOptions(selectedDepartmentId, {
               iconLayout: "default#image",
               iconImageHref: "/shop14/assets/assets/map_department.png",
-              iconImageSize: [32, 32],
-              iconImageOffset: [-16, -16],
+              iconImageSize: [20, 26],
+              iconImageOffset: [-10, -26],
             });
           }
           if (departmentId != null) {
             objectManager.objects.setObjectOptions(departmentId, {
               iconLayout: "default#image",
               iconImageHref: "/shop14/assets/assets/map_department_selected.png",
-              iconImageSize: [42, 42],
-              iconImageOffset: [-21, -21],
+              iconImageSize: [50, 64],
+              iconImageOffset: [-25, -64],
             });
             var departmentObject = objectManager.objects.getById(departmentId);
             if (departmentObject != null) {
@@ -282,8 +290,7 @@
         const data = JSON.parse(params);
         var departments = data.deps;
         var objects = [];
-        for (let index = 0; index < departments.length; index++) {
-          const department = departments[index];
+        for (const department of departments) {
           objects.push({
             type: "Feature",
             id: department.id,
@@ -294,8 +301,8 @@
             options: {
               iconLayout: "default#image",
               iconImageHref: "/shop14/assets/assets/map_department.png",
-              iconImageSize: [32, 32],
-              iconImageOffset: [-16, -16],
+              iconImageSize: [20, 26],
+              iconImageOffset: [-10, -26],
             },
           });
         }
