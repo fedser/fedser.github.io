@@ -91,6 +91,9 @@
         // });
 
         myMap = new ymaps.Map("map", state);
+        myMap.margin.addArea({
+          bottom: 16,
+        });
         // var zoomControl = new ymaps.control.ZoomControl({
         //   options: {
         //     size: "small",
