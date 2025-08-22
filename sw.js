@@ -1,6 +1,6 @@
 'use strict';
 const CACHE_PREFIX    = 'app-cache';
-const CACHE_VERSION   = '1755855657513';
+const CACHE_VERSION   = '1755855813928';
 const CACHE_NAME      = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 const TEMP_CACHE      = `${CACHE_PREFIX}-temp-${CACHE_VERSION}`;
 const MANIFEST_CACHE  = `${CACHE_PREFIX}-manifest`;
@@ -13,17 +13,17 @@ const RESOURCES = {
 "/": {
 "name": "index.html",
 "size": 34036,
-"hash": "fe7798ac3a4fe88b05c2122a08bd8ad7"
+"hash": "c857685c57a65c1618908bdcf84537f5"
 },
 "flutter_bootstrap.js": {
 "name": "flutter_bootstrap.js",
 "size": 9590,
-"hash": "065359236e6c7d30dab232e68a5cff05"
+"hash": "6293f0ab7281ba39d8548d9fc69a0339"
 },
 "version.json": {
 "name": "version.json",
 "size": 90,
-"hash": "3ed0388936bd0bb40945096a0442e2b6"
+"hash": "1a5ba72631467835288d6c62f1e11a5b"
 },
 "offline.html": {
 "name": "offline.html",
@@ -38,12 +38,12 @@ const RESOURCES = {
 "index.html": {
 "name": "index.html",
 "size": 34036,
-"hash": "fe7798ac3a4fe88b05c2122a08bd8ad7"
+"hash": "c857685c57a65c1618908bdcf84537f5"
 },
 "main.dart.js": {
 "name": "main.dart.js",
 "size": 1792875,
-"hash": "b4d8e71671ea5bd6c13d863c1905ab6d"
+"hash": "d28e5e28f12ac3c5a23593dd16495480"
 },
 "flutter.js": {
 "name": "flutter.js",
@@ -53,7 +53,7 @@ const RESOURCES = {
 "flutter_service_worker.js": {
 "name": "flutter_service_worker.js",
 "size": 9423,
-"hash": "30901d8908c13e70a94ddb341a18ff98"
+"hash": "5886bb9d3fe2a55cf97d3eb96d6433b5"
 },
 "favicon.png": {
 "name": "favicon.png",
@@ -193,7 +193,7 @@ const RESOURCES = {
 "sw.js": {
 "name": "sw.js",
 "size": 12860,
-"hash": "a2028b8895b560ffb33291139c565538"
+"hash": "4e8f951a67e138cd8e13c301736f67d8"
 },
 "canvaskit/skwasm.js": {
 "name": "skwasm.js",
