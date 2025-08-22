@@ -17,6 +17,14 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="sw_example" />
+
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
     <link rel="apple-touch-icon" href="icons/Icon-192.png" />
 
     <!-- Favicon -->
@@ -543,7 +551,7 @@
        */
       async function registerServiceWorker() {
         // eslint-disable-next-line no-undef
-        const swVersion = '"1693994952"';
+        const swVersion = '"2885959102"';
         if (!swVersion || swVersion === 'null' || swVersion === 'undefined') {
           console.log('Service Worker not registered (no version or non-production build).');
           isServiceWorkerAvailable = false;

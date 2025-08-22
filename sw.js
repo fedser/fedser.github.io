@@ -1,6 +1,6 @@
 'use strict';
 const CACHE_PREFIX    = 'app-cache';
-const CACHE_VERSION   = '1755855367232';
+const CACHE_VERSION   = '1755855657513';
 const CACHE_NAME      = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 const TEMP_CACHE      = `${CACHE_PREFIX}-temp-${CACHE_VERSION}`;
 const MANIFEST_CACHE  = `${CACHE_PREFIX}-manifest`;
@@ -8,22 +8,22 @@ const MANIFEST_KEY    = '__sw-manifest__';
 const RETRY_DELAY     = 500;
 const MEDIA_EXT       = /\.(png|jpe?g|svg|gif|webp|ico|woff2?|ttf|otf|eot|mp4|webm|ogg|mp3|wav|pdf|json|jsonp)$/i;
 const NETWORK_ONLY    = /\.(php|ashx|api)$/i;
-const RESOURCES_SIZE  = 31043404;
+const RESOURCES_SIZE  = 31043606;
 const RESOURCES = {
 "/": {
 "name": "index.html",
-"size": 33834,
-"hash": "8375ea7f8e71bd9129f4e620f30eccad"
+"size": 34036,
+"hash": "fe7798ac3a4fe88b05c2122a08bd8ad7"
 },
 "flutter_bootstrap.js": {
 "name": "flutter_bootstrap.js",
 "size": 9590,
-"hash": "5597a7fef9a0398cb00accc64682dbc4"
+"hash": "065359236e6c7d30dab232e68a5cff05"
 },
 "version.json": {
 "name": "version.json",
 "size": 90,
-"hash": "20b4b398af1b9c839b4b0b68bbd365e9"
+"hash": "3ed0388936bd0bb40945096a0442e2b6"
 },
 "offline.html": {
 "name": "offline.html",
@@ -37,13 +37,13 @@ const RESOURCES = {
 },
 "index.html": {
 "name": "index.html",
-"size": 33834,
-"hash": "8375ea7f8e71bd9129f4e620f30eccad"
+"size": 34036,
+"hash": "fe7798ac3a4fe88b05c2122a08bd8ad7"
 },
 "main.dart.js": {
 "name": "main.dart.js",
 "size": 1792875,
-"hash": "8f0a789999671019d8f5826e9a4165b5"
+"hash": "b4d8e71671ea5bd6c13d863c1905ab6d"
 },
 "flutter.js": {
 "name": "flutter.js",
@@ -53,7 +53,7 @@ const RESOURCES = {
 "flutter_service_worker.js": {
 "name": "flutter_service_worker.js",
 "size": 9423,
-"hash": "c5d7256f8892dfbcf7e424fe114ec302"
+"hash": "30901d8908c13e70a94ddb341a18ff98"
 },
 "favicon.png": {
 "name": "favicon.png",
@@ -193,7 +193,7 @@ const RESOURCES = {
 "sw.js": {
 "name": "sw.js",
 "size": 12860,
-"hash": "7bc6d64eeb70546ba3c11342800fe091"
+"hash": "a2028b8895b560ffb33291139c565538"
 },
 "canvaskit/skwasm.js": {
 "name": "skwasm.js",
