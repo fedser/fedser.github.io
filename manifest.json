@@ -1,11 +1,12 @@
 {
-    "name": "KPI-DRIVE",
-    "short_name": "KPI-DRIVE",
-    "start_url": ".",
+    "name": "Service Worker",
+    "short_name": "SW",
+    "start_url": "/?source=pwa",
+    "id": "/",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "",
+    "description": "Service Worker Example",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
@@ -18,6 +19,19 @@
             "src": "icons/Icon-512.png",
             "sizes": "512x512",
             "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
         }
-    ]
+    ],
+    "screenshots": []
 }

@@ -1,51 +1,754 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+<head>
+  <base href="/">
 
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Service Worker Example">
+  <meta flt-viewport="" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#25D366">
 
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-    <!-- <base href="/" /> -->
-    <base href="" />
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="sw_example">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-    <meta charset="UTF-8" />
-    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
-    <meta name="description" content="KPI-DRIVE" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png" />
 
-    <!-- iOS meta tags & icons -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <meta name="apple-mobile-web-app-title" content="KPI-DRIVE" />
-    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
+  <title>Service Worker</title>
+  <link rel="manifest" href="manifest.json">
+  <style type="text/css">
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: rgb(244 253 247);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="favicon.png" />
+    #loading {
+      text-align: center;
+      color: white;
+      max-width: 90vw;
+      animation: fadeIn 0.6s ease-in;
+    }
 
-    <title>KPI-DRIVE</title>
-    <link rel="manifest" href="manifest.json" />
-    <script>
-      function openPdf(pdfBytes) {
-        var pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
-        const pdfUrl = window.URL.createObjectURL(pdfBlob);
-        window.open(pdfUrl);
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
       }
-    </script>
-  </head>
-  <body>
-    <script src="flutter_bootstrap.js" async></script>
-    <script>
-      document.body.addEventListener("contextmenu", (event) => {
-        event.preventDefault();
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo-container {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 2rem;
+    }
+
+    .logo-image {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .logo-image:hover {
+      transform: scale(1.05);
+    }
+
+    .progress-ring {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: 140px;
+      height: 140px;
+      transform: rotate(-90deg);
+    }
+
+    .progress-ring-circle {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.2);
+      stroke-width: 4;
+    }
+
+    .progress-ring-progress {
+      fill: none;
+      stroke: rgb(37 211 102); /* #00ff88; */
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 439.823;
+      stroke-dashoffset: 439.823;
+      transition: stroke-dashoffset 0.3s ease;
+      filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.5));
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0 0 1rem 0;
+      letter-spacing: 0.5px;
+      color: #239965;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .progress-text {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-top: 1rem;
+      font-weight: 500;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      color: #b0b0b0;
+    }
+
+    .progress-percentage {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      margin-top: 0.5rem;
+      font-weight: 400;
+      color: #b0b0b0;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      transition: color 0.3s ease;
+    }
+
+    .reset-button {
+      margin-top: 2rem;
+      padding: 12px 24px;
+      background: #25D366; /* rgba(255, 255, 255, 0.1); */
+      border: 2px solid #25D366; /* rgba(255, 255, 255, 0.3); */
+      border-radius: 8px;
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .reset-button:hover {
+      background: #61ff9b; /* rgba(255, 255, 255, 0.2); */
+      border-color: #61ff9b; /* rgba(255, 255, 255, 0.5); */
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .reset-button:active {
+      transform: translateY(0);
+    }
+
+    .reset-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, #61ff9b /* rgba(255, 255, 255, 0.2) */, transparent);
+      transition: left 0.5s;
+    }
+
+    .reset-button:hover::before {
+      left: 100%;
+    }
+
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 280px;
+      background-color: rgba(0, 0, 0, 0.9);
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 8px 12px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -140px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      backdrop-filter: blur(10px);
+    }
+
+    .tooltip .tooltiptext::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .loading-dots {
+      display: inline-block;
+      margin-left: 1px;
+      width: 1.5em;
+      text-align: left;
+      overflow: hidden;
+      vertical-align: bottom;
+    }
+
+    .loading-dots::after {
+      content: '...';
+      display: inline-block;
+      width: 1.5em;
+      /* fixed width to prevent shifting */
+      text-align: left;
+      overflow: hidden;
+      vertical-align: bottom; /*bottom;*/
+      animation: dots 1.5s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0%, 100% { width: 0; }
+      25% { width: 0.5em; }
+      50% { width: 1em; }
+      75% { width: 1.5em; }
+    }
+
+    @media (prefers-color-scheme: dark) {}
+
+    @media (max-width: 480px) {
+      .logo-image {
+        width: 100px;
+        height: 100px;
+      }
+
+      .progress-ring {
+        width: 120px;
+        height: 120px;
+        top: -10px;
+        left: -10px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .progress-text {
+        font-size: 1rem;
+      }
+    }
+  </style>
+
+  <!-- Enable WASM threads on debug: https://github.com/orgs/community/discussions/13309#discussioncomment-3844940 -->
+  <!-- <script>
+    if (!window.crossOriginIsolated && ['localhost', '127.0.0.1'].includes(location.hostname)) {
+      const script = document.createElement('script');
+      script.src = 'enable-wasm-threads.js';
+      document.head.appendChild(script);
+    }
+  </script> -->
+</head>
+
+<body>
+  <!-- Loading indicator -->
+  <div id="loading">
+    <div class="logo-container">
+      <svg class="progress-ring" viewBox="0 0 140 140">
+        <circle class="progress-ring-circle" cx="70" cy="70" r="65" vector-effect="non-scaling-stroke"></circle>
+        <circle class="progress-ring-progress" cx="70" cy="70" r="65" vector-effect="non-scaling-stroke" id="progress-circle"></circle>
+      </svg>
+      <img src="icons/Icon-192.png" class="logo-image" alt="Logo">
+    </div>
+    <h1>Service Worker</h1>
+    <div class="progress-text">
+      <span id="progress-text">Initializing</span>
+      <span class="loading-dots"></span>
+    </div>
+    <div class="progress-percentage" id="progress-percentage">0%</div>
+    <div class="tooltip" id="reset-button-container" style="display: none;">
+      <button class="reset-button" id="reset-button" onclick="resetAppCache()">
+        ↻ Reset Cache
+      </button>
+      <span class="tooltiptext">
+        Loading appears to be stuck. Click to clear cache, unregister service worker, and reload the page.
+      </span>
+    </div>
+  </div>
+
+  <script>
+    // Progress management
+    let currentProgress = 0;
+    let isServiceWorkerAvailable = false;
+    let totalResourcesSize = 0; // Total size from sw.js RESOURCES_SIZE
+    let loadedResources = new Map(); // Track loaded resources: resourceKey -> { size, loaded }
+    let serviceWorkerMessageHandler = null; // Store reference to the message handler for cleanup
+
+    // Stalled loading detection
+    let lastProgressUpdateTime = Date.now();
+    let stalledLoadingTimeout = null;
+    let resetButtonShown = false;
+    const STALLED_TIMEOUT_MS = 30000;        // 30 seconds
+    const MAX_FALLBACK_SIZE = 3 * 1024 ** 2; // 3 MiB
+
+    const progressCircle = document.getElementById('progress-circle');
+    const progressText = document.getElementById('progress-text');
+    const progressPercentage = document.getElementById('progress-percentage');
+    const circumference = 2 * Math.PI * 65; // radius = 65
+
+    // Initialize progress ring
+    progressCircle.style.strokeDasharray = circumference;
+    progressCircle.style.strokeDashoffset = circumference;
+
+    /**
+     * Calculates the total loaded resources size.
+     * Returns the total loaded size from the loadedResources map.
+     */
+    function calculateTotalLoaded() {
+      let totalLoaded = 0;
+      loadedResources.forEach(resource => {
+        totalLoaded += resource.loaded || 0; // Use loaded bytes if available
       });
-    </script>
-  </body>
+      return totalLoaded;
+    }
+
+    /**
+     * Calculates the total size of all resources.
+     * Returns the total size from the loadedResources map.
+     */
+    function calculateTotalSize() {
+      let totalSize = 0;
+      loadedResources.forEach(resource => {
+        totalSize += resource.size || 0; // Use resource size if available
+      });
+      // Ensure at least 3 MB total size if no resources are loaded yet
+      return Math.max(totalSize, MAX_FALLBACK_SIZE);
+    }
+
+    /**
+     * Updates the progress ring and text.
+     * @param {number} value - Progress value (0-100).
+     * @param {string} text - Optional text to display.
+     */
+    function updateLoadingProgress(value, text = '') {
+      currentProgress = Math.min(Math.max(value, currentProgress), 100);
+
+      // Update circular progress
+      const offset = circumference - (currentProgress / 100) * circumference;
+      progressCircle.style.strokeDashoffset = offset;
+
+      // Update text
+      progressPercentage.textContent = `${Math.round(currentProgress)}%`;
+      if (text) progressText.textContent = text;
+
+      // Console logging
+      console.log(`Loading progress: ${Math.round(currentProgress)}% - ${text || 'Loading'}`);
+
+      // Update last progress time and reset stalled loading detection
+      lastProgressUpdateTime = Date.now();
+      resetStalledLoadingDetection();
+    }
+
+    /**
+     * Removes the loading widget with a fade-out effect.
+     * This function is called when the app is ready.
+     */
+    function removeLoadingIndicator() {
+      switchPointerEventForFlutterView(true); // Allow pointer events on the Flutter view
+      const loadingEl = document.getElementById("loading");
+      if (!loadingEl) return;
+      loadingEl.remove();
+    }
+
+    // Expose functions globally
+    window.updateLoadingProgress = updateLoadingProgress;
+    window.removeLoadingIndicator = removeLoadingIndicator;
+
+    /**
+     * Detects if loading has stalled and shows reset button.
+     */
+    function checkStalledLoading() {
+      const timeSinceLastUpdate = Date.now() - lastProgressUpdateTime;
+      if (timeSinceLastUpdate >= STALLED_TIMEOUT_MS && !resetButtonShown) {
+        showResetButton();
+      }
+    }
+
+    /**
+     * Shows the reset button when loading appears stalled.
+     */
+    function showResetButton() {
+      const resetButtonContainer = document.getElementById('reset-button-container');
+      if (resetButtonContainer && !resetButtonShown) {
+        resetButtonContainer.style.display = 'block';
+        resetButtonShown = true;
+        console.log('Loading appears stalled, showing reset button');
+      }
+    }
+
+    /**
+     * Resets the stalled loading detection timer.
+     */
+    function resetStalledLoadingDetection() {
+      if (stalledLoadingTimeout) {
+        clearTimeout(stalledLoadingTimeout);
+      }
+
+      // Don't set new timeout if reset button is already shown or loading is complete
+      if (!resetButtonShown && currentProgress < 100) {
+        stalledLoadingTimeout = setTimeout(checkStalledLoading, STALLED_TIMEOUT_MS);
+      }
+    }
+
+    /**
+     * Resets app cache, unregisters service worker, and reloads the page.
+     */
+    async function resetAppCache() {
+      try {
+        console.log('Resetting app cache...');
+
+        // Update button text to show it's working
+        const resetButton = document.getElementById('reset-button');
+        if (resetButton) {
+          resetButton.innerHTML = '⏳ Resetting...';
+          resetButton.disabled = true;
+        }
+
+        // Clear all caches
+        if ('caches' in window) {
+          const cacheNames = await caches.keys();
+          await Promise.all(
+            cacheNames.map(cacheName => {
+              console.log('Deleting cache:', cacheName);
+              return caches.delete(cacheName);
+            })
+          );
+        }
+
+        // Unregister all service workers
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(
+            registrations.map(registration => {
+              console.log('Unregistering service worker:', registration.scope);
+              return registration.unregister();
+            })
+          );
+        }
+
+        // Clear local storage and session storage
+        if ('localStorage' in window) {
+          localStorage.clear();
+        }
+        if ('sessionStorage' in window) {
+          sessionStorage.clear();
+        }
+
+        console.log('Cache cleared, reloading page...');
+
+        // Force reload with cache bypass
+        window.location.reload(true);
+      } catch (error) {
+        console.error('Error resetting cache:', error);
+
+        // Fallback: just reload the page
+        window.location.reload(true);
+      }
+    }
+
+    // Make resetAppCache available globally
+    window.resetAppCache = resetAppCache;
+
+    /**
+     * Unregisters the old service worker if it exists.
+     * This is useful for cleaning up old service workers that might interfere with the new one.
+     */
+    async function maybeUnregisterServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        try {
+          const registration = await navigator.serviceWorker.getRegistration('/flutter_service_worker.js');
+          if (registration) {
+            const success = await registration.unregister();
+            if (success) {
+              console.log('Old Service Worker unregistered successfully.');
+            } else {
+              console.log('Could not unregister the Service Worker.');
+            }
+          } else {
+            console.log('Service Worker not found for unregistration.');
+          }
+        } catch (error) {
+          console.error('Error unregistering Service Worker:', error);
+        }
+      } else {
+        console.log('Service Workers are not supported in this browser.');
+      }
+    }
+
+    /**
+     * Switches the pointer event handling for the Flutter view.
+     * This is useful for showing or hiding the Flutter view based on loading state.
+     * @param {boolean} handle - If true, allows pointer events on the Flutter view.
+     */
+    async function switchPointerEventForFlutterView(handle) {
+      const flutterView = document.querySelector('flutter-view');
+      if (!flutterView || handle == undefined) return;
+      flutterView.style.pointerEvents = handle ? 'auto' : 'none';
+    }
+
+    /**
+     * Registers the service worker and listens for messages.
+     * Updates progress based on service worker messages.
+     */
+    async function registerServiceWorker() {
+      // eslint-disable-next-line no-undef
+      const swVersion = '"3451315506"';
+      if (!swVersion || swVersion === 'null' || swVersion === 'undefined') {
+        console.log('Service Worker not registered (no version or non-production build).');
+        isServiceWorkerAvailable = false;
+        return;
+      }
+
+      if (!('serviceWorker' in navigator)) {
+        console.warn('Service Workers are not supported in this browser');
+        isServiceWorkerAvailable = false;
+        return;
+      }
+
+      try {
+        const swUrl = `sw.js?v=${swVersion}`;
+        await navigator.serviceWorker.register(swUrl);
+        console.log('Service Worker registered successfully');
+
+        // Create and store the message handler for later cleanup
+        serviceWorkerMessageHandler = (event) => {
+          // Ignore messages that are not from the service worker or not of type 'sw-progress'
+          if (!event.data || event.data?.type !== 'sw-progress')
+            return;
+
+          const {
+            resourceKey,
+            resourceUrl,
+            resourceName,
+            resourceSize,
+            resourcesSize,
+            timestamp,
+            loaded,
+            status
+          } = event.data;
+
+          //totalResourcesSize = resourcesSize || totalResourcesSize; // Update total size if provided
+
+          if (resourceKey && resourceSize !== undefined && loaded !== undefined) {
+            // Update or add resource in our hash table
+            loadedResources.set(resourceKey, {
+              name: resourceName || resourceKey, // Use resourceName if available
+              key: resourceKey, // Unique key for the resource
+              size: resourceSize, // Size of the resource in bytes
+              loaded: loaded, // Bytes loaded so far
+              url: resourceUrl, // URL of the resource
+              status: status, // installing | fetching
+              timestamp: timestamp || Date.now() // Timestamp of the last update
+            });
+
+            // Calculate total progress
+            const totalLoaded = calculateTotalLoaded();
+            const totalSize = calculateTotalSize();
+            const progressPercent = Math.min((totalLoaded / totalSize) * 100, 100);
+
+            // Map SW progress from 10% to 90% (leaving 10% for dart logic)
+            const mappedProgress = 10 + (progressPercent * 0.8); // 10% + (0-100% * 80%)
+
+            console.log(`Downloading resource "${resourceName}" (${formatBytes(loaded)} / ${formatBytes(resourceSize)})`);
+
+            let progressText = 'Downloading';
+            if (totalLoaded > 0) {
+              //const resourceCount = loadedResources.size;
+              progressText = `Downloading (${formatBytes(totalLoaded)} / ${formatBytes(totalSize)})`;
+            }
+
+            // Update the loading progress only if it's below 90%
+            // Because we reserve 10% for the Dart logic
+            if (currentProgress <= 90)
+              updateLoadingProgress(mappedProgress, progressText);
+          }
+        };
+
+        // Listen for service worker messages
+        navigator.serviceWorker.addEventListener('message', serviceWorkerMessageHandler);
+
+        const registration = await navigator.serviceWorker.ready;        
+        console.log('Service Worker ready: ', registration);
+        isServiceWorkerAvailable = true;
+      } catch (error) {
+        console.warn('Service Worker registration failed:', error);
+        isServiceWorkerAvailable = false;
+      }
+    }
+
+    /**
+     * Loads the Flutter application.
+     * Initializes the Flutter engine and runs the app.
+     */
+    async function setupFlutterApp() {
+      const searchParams = new URLSearchParams(window.location.search);
+      const renderer = searchParams.get('renderer');
+      const userConfig = renderer ? { 'renderer': renderer } : {};
+
+      try {
+        await _flutter.loader.load({
+          config: userConfig,
+          onEntrypointLoaded: async function(engineInitializer) {
+            if (!isServiceWorkerAvailable) {
+              // Fallback progress without service worker
+              updateLoadingProgress(30, 'Initializing Flutter engine');
+              switchPointerEventForFlutterView(false);
+            }
+
+            // Initialize the Flutter engine
+            const appRunner = await engineInitializer.initializeEngine();
+            switchPointerEventForFlutterView(false);
+
+            // Clean up service worker message listener
+            if (serviceWorkerMessageHandler && 'serviceWorker' in navigator) {
+              navigator.serviceWorker.removeEventListener('message', serviceWorkerMessageHandler);
+              serviceWorkerMessageHandler = null;
+              console.log('Service Worker message listener removed');
+            }
+
+            // Set the loading progress to 90% before running the app
+            updateLoadingProgress(90, 'Starting application');
+            switchPointerEventForFlutterView(false);
+
+            // Run the Flutter application, and initialize
+            // the last 10% of the loading progress
+            await appRunner.runApp();
+            switchPointerEventForFlutterView(false);
+          }
+        });
+      } catch (error) {
+        console.error('Failed to initialize Flutter app:', error);
+        updateLoadingProgress(0, 'Failed to load application');
+      }
+    }
+
+    /**
+     * Initializes the Flutter application.
+     * Registers the service worker and loads the Flutter engine.
+     */
+    async function initializeApp() {
+      try {
+        updateLoadingProgress(0, 'Loading flutter application');
+
+        // This tags are replaced by the Flutter build system
+        // @ts-ignore
+        (()=>{var C={blink:!0,gecko:!1,webkit:!1,unknown:!1},R=()=>navigator.vendor==="Google Inc."||navigator.userAgent.includes("Edg/")?"blink":navigator.vendor==="Apple Computer, Inc."?"webkit":navigator.vendor===""&&navigator.userAgent.includes("Firefox")?"gecko":"unknown",L=R(),x=()=>typeof ImageDecoder>"u"?!1:L==="blink",K=()=>typeof Intl.v8BreakIterator<"u"&&typeof Intl.Segmenter<"u",B=()=>{let i=[0,97,115,109,1,0,0,0,1,5,1,95,1,120,0];return WebAssembly.validate(new Uint8Array(i))},w={browserEngine:L,hasImageCodecs:x(),hasChromiumBreakIterators:K(),supportsWasmGC:B(),crossOriginIsolated:window.crossOriginIsolated};function c(...i){return new URL(T(...i),document.baseURI).toString()}function T(...i){return i.filter(e=>!!e).map((e,r)=>r===0?I(e):z(I(e))).filter(e=>e.length).join("/")}function z(i){let e=0;for(;e<i.length&&i.charAt(e)==="/";)e++;return i.substring(e)}function I(i){let e=i.length;for(;e>0&&i.charAt(e-1)==="/";)e--;return i.substring(0,e)}function U(i,e){return i.canvasKitBaseUrl?i.canvasKitBaseUrl:e.engineRevision&&!e.useLocalCanvasKit?T("https://www.gstatic.com/flutter-canvaskit",e.engineRevision):"canvaskit"}var v=class{constructor(){this._scriptLoaded=!1}setTrustedTypesPolicy(e){this._ttPolicy=e}async loadEntrypoint(e){let{entrypointUrl:r=c("main.dart.js"),onEntrypointLoaded:t,nonce:n}=e||{};return this._loadJSEntrypoint(r,t,n)}async load(e,r,t,n,s){s??=u=>{u.initializeEngine(t).then(m=>m.runApp())};let{entrypointBaseUrl:a}=t,{entryPointBaseUrl:o}=t;if(!a&&o&&(console.warn("[deprecated] `entryPointBaseUrl` is deprecated and will be removed in a future release. Use `entrypointBaseUrl` instead."),a=o),e.compileTarget==="dart2wasm")return this._loadWasmEntrypoint(e,r,a,s);{let u=e.mainJsPath??"main.dart.js",m=c(a,u);return this._loadJSEntrypoint(m,s,n)}}didCreateEngineInitializer(e){typeof this._didCreateEngineInitializerResolve=="function"&&(this._didCreateEngineInitializerResolve(e),this._didCreateEngineInitializerResolve=null,delete _flutter.loader.didCreateEngineInitializer),typeof this._onEntrypointLoaded=="function"&&this._onEntrypointLoaded(e)}_loadJSEntrypoint(e,r,t){let n=typeof r=="function";if(!this._scriptLoaded){this._scriptLoaded=!0;let s=this._createScriptTag(e,t);if(n)console.debug("Injecting <script> tag. Using callback."),this._onEntrypointLoaded=r,document.head.append(s);else return new Promise((a,o)=>{console.debug("Injecting <script> tag. Using Promises. Use the callback approach instead!"),this._didCreateEngineInitializerResolve=a,s.addEventListener("error",o),document.head.append(s)})}}async _loadWasmEntrypoint(e,r,t,n){if(!this._scriptLoaded){this._scriptLoaded=!0,this._onEntrypointLoaded=n;let{mainWasmPath:s,jsSupportRuntimePath:a}=e,o=c(t,s),u=c(t,a);this._ttPolicy!=null&&(u=this._ttPolicy.createScriptURL(u));let p=(await import(u)).compileStreaming(fetch(o)),l;e.renderer==="skwasm"?l=(async()=>{let d=await r.skwasm;return window._flutter_skwasmInstance=d,{skwasm:d.wasmExports,skwasmWrapper:d,ffi:{memory:d.wasmMemory}}})():l=Promise.resolve({}),await(await(await p).instantiate(await l,{loadDynamicModule:async(d,S)=>{let j=fetch(c(t,d)),_=c(t,S);this._ttPolicy!=null&&(_=this._ttPolicy.createScriptURL(_));let A=import(_);return[await j,await A]}})).invokeMain()}}_createScriptTag(e,r){let t=document.createElement("script");t.type="application/javascript",r&&(t.nonce=r);let n=e;return this._ttPolicy!=null&&(n=this._ttPolicy.createScriptURL(e)),t.src=n,t}};async function E(i,e,r){if(e<0)return i;let t,n=new Promise((s,a)=>{t=setTimeout(()=>{a(new Error(`${r} took more than ${e}ms to resolve. Moving on.`,{cause:E}))},e)});return Promise.race([i,n]).finally(()=>{clearTimeout(t)})}var h=class{setTrustedTypesPolicy(e){this._ttPolicy=e}loadServiceWorker(e){if(!e)return console.debug("Null serviceWorker configuration. Skipping."),Promise.resolve();if(!("serviceWorker"in navigator)){let o="Service Worker API unavailable.";return window.isSecureContext||(o+=`
+The current context is NOT secure.`,o+=`
+Read more: https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts`),Promise.reject(new Error(o))}let{serviceWorkerVersion:r,serviceWorkerUrl:t=c(`flutter_service_worker.js?v=${r}`),timeoutMillis:n=4e3}=e,s=t;this._ttPolicy!=null&&(s=this._ttPolicy.createScriptURL(s));let a=navigator.serviceWorker.register(s).then(o=>this._getNewServiceWorker(o,r)).then(this._waitForServiceWorkerActivation);return E(a,n,"prepareServiceWorker")}async _getNewServiceWorker(e,r){if(!e.active&&(e.installing||e.waiting))return console.debug("Installing/Activating first service worker."),e.installing||e.waiting;if(e.active.scriptURL.endsWith(r))return console.debug("Loading from existing service worker."),e.active;{let t=await e.update();return console.debug("Updating service worker."),t.installing||t.waiting||t.active}}async _waitForServiceWorkerActivation(e){if(!e||e.state==="activated")if(e){console.debug("Service worker already active.");return}else throw new Error("Cannot activate a null service worker!");return new Promise((r,t)=>{e.addEventListener("statechange",()=>{e.state==="activated"&&(console.debug("Activated new service worker."),r())})})}};var g=class{constructor(e,r="flutter-js"){let t=e||[/\.js$/,/\.mjs$/];window.trustedTypes&&(this.policy=trustedTypes.createPolicy(r,{createScriptURL:function(n){if(n.startsWith("blob:"))return n;let s=new URL(n,window.location),a=s.pathname.split("/").pop();if(t.some(u=>u.test(a)))return s.toString();console.error("URL rejected by TrustedTypes policy",r,":",n,"(download prevented)")}}))}};var k=i=>{let e=WebAssembly.compileStreaming(fetch(i));return(r,t)=>((async()=>{let n=await e,s=await WebAssembly.instantiate(n,r);t(s,n)})(),{})};var W=(i,e,r,t)=>(window.flutterCanvasKitLoaded=(async()=>{if(window.flutterCanvasKit)return window.flutterCanvasKit;let n=r.hasChromiumBreakIterators&&r.hasImageCodecs;if(!n&&e.canvasKitVariant=="chromium")throw"Chromium CanvasKit variant specifically requested, but unsupported in this browser";let s=n&&e.canvasKitVariant!=="full",a=t;e.canvasKitVariant=="experimentalWebParagraph"?a=c(a,"experimental_webparagraph"):s&&(a=c(a,"chromium"));let o=c(a,"canvaskit.js");i.flutterTT.policy&&(o=i.flutterTT.policy.createScriptURL(o));let u=k(c(a,"canvaskit.wasm")),m=await import(o);return window.flutterCanvasKit=await m.default({instantiateWasm:u}),window.flutterCanvasKit})(),window.flutterCanvasKitLoaded);var P=async(i,e,r,t)=>{let s=!r.hasImageCodecs||!r.hasChromiumBreakIterators?"skwasm_heavy":"skwasm",a=c(t,`${s}.js`),o=a;i.flutterTT.policy&&(o=i.flutterTT.policy.createScriptURL(o));let u=k(c(t,`${s}.wasm`));return await(await import(o)).default({skwasmSingleThreaded:!r.crossOriginIsolated||e.forceSingleThreadedSkwasm,instantiateWasm:u,locateFile:(p,l)=>{if(p.endsWith(".ww.js")){let y=c(t,p);return URL.createObjectURL(new Blob([`
+"use strict";
+
+let eventListener;
+eventListener = (message) => {
+    const pendingMessages = [];
+    const data = message.data;
+    data["instantiateWasm"] = (info,receiveInstance) => {
+        const instance = new WebAssembly.Instance(data["wasm"], info);
+        return receiveInstance(instance, data["wasm"])
+    };
+    import(data.js).then(async (skwasm) => {
+        await skwasm.default(data);
+
+        removeEventListener("message", eventListener);
+        for (const message of pendingMessages) {
+            dispatchEvent(message);
+        }
+    });
+    removeEventListener("message", eventListener);
+    eventListener = (message) => {
+
+        pendingMessages.push(message);
+    };
+
+    addEventListener("message", eventListener);
+};
+addEventListener("message", eventListener);
+`],{type:"application/javascript"}))}return url},mainScriptUrlOrBlob:a})};var b=class{async loadEntrypoint(e){let{serviceWorker:r,...t}=e||{},n=new g,s=new h;s.setTrustedTypesPolicy(n.policy),await s.loadServiceWorker(r).catch(o=>{console.warn("Exception while loading service worker:",o)});let a=new v;return a.setTrustedTypesPolicy(n.policy),this.didCreateEngineInitializer=a.didCreateEngineInitializer.bind(a),a.loadEntrypoint(t)}async load({serviceWorkerSettings:e,onEntrypointLoaded:r,nonce:t,config:n}={}){n??={};let s=_flutter.buildConfig;if(!s)throw"FlutterLoader.load requires _flutter.buildConfig to be set";let a=n.wasmAllowList?.[w.browserEngine]??C[w.browserEngine],o=d=>{switch(d){case"skwasm":return w.supportsWasmGC&&a;default:return!0}},u=(d,S)=>d.renderer==S,m=d=>d.compileTarget==="dart2wasm"&&!w.supportsWasmGC||n.renderer&&!u(d,n.renderer)?!1:o(d.renderer),p=s.builds.find(m);if(!p)throw"FlutterLoader could not find a build compatible with configuration and environment.";let l={};l.flutterTT=new g,e&&(l.serviceWorkerLoader=new h,l.serviceWorkerLoader.setTrustedTypesPolicy(l.flutterTT.policy),await l.serviceWorkerLoader.loadServiceWorker(e).catch(d=>{console.warn("Exception while loading service worker:",d)}));let y=U(n,s);p.renderer==="canvaskit"?l.canvasKit=W(l,n,w,y):p.renderer==="skwasm"&&(l.skwasm=P(l,n,w,y));let f=new v;return f.setTrustedTypesPolicy(l.flutterTT.policy),this.didCreateEngineInitializer=f.didCreateEngineInitializer.bind(f),f.load(p,l,n,t,r)}};window._flutter||(window._flutter={});window._flutter.loader||(window._flutter.loader=new b);})();
+//# sourceMappingURL=flutter.js.map
+
+        // @ts-ignore
+        if (!window._flutter) {
+  window._flutter = {};
+}
+_flutter.buildConfig = {"engineRevision":"1e9a811bf8e70466596bcf0ea3a8b5adb5f17f7f","builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"},{}]};
+
+
+        // Try to unregister any Flutter service worker
+        // because we want to register our own sw.js
+        await maybeUnregisterServiceWorker();
+
+        // Register service worker first
+        updateLoadingProgress(10, 'Registering service worker');
+        await registerServiceWorker();
+
+        updateLoadingProgress(20, 'Preparing application to load');
+        await setupFlutterApp();
+      } catch (e) {
+        console.error('[SW] registration failed:', e);
+        await loadFlutterApp(); // Load Flutter app even if service worker registration fails
+      }
+    }
+
+    // Event listeners
+    window.addEventListener('load', function () {
+      // Start stalled loading detection
+      resetStalledLoadingDetection();
+      initializeApp();
+    }, { once: true });
+
+    // Listen for the first frame event to finalize loading
+    window.addEventListener('flutter-first-frame', function () {
+      // Clear stalled loading timeout since app loaded successfully
+      if (stalledLoadingTimeout) {
+        clearTimeout(stalledLoadingTimeout);
+        stalledLoadingTimeout = null;
+      }
+
+      removeLoadingIndicator();
+    }, { once: true });
+
+    /**
+     * Formats bytes into a human-readable string.
+     * @param {number} bytes - The number of bytes.
+     * @param {number} [decimals=1] - Number of decimal places to show.
+     */
+    function formatBytes(bytes, decimals = 1) {
+      if (bytes === 0) return '0 B';
+      const k = 1024;
+      const dm = decimals < 0 ? 0 : decimals;
+      const sizes = ['B', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    }
+  </script>
+</body>
 </html>
