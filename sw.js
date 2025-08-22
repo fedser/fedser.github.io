@@ -1,6 +1,6 @@
 'use strict';
 const CACHE_PREFIX    = 'app-cache';
-const CACHE_VERSION   = '1755850580949';
+const CACHE_VERSION   = '1755852054015';
 const CACHE_NAME      = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 const TEMP_CACHE      = `${CACHE_PREFIX}-temp-${CACHE_VERSION}`;
 const MANIFEST_CACHE  = `${CACHE_PREFIX}-manifest`;
@@ -8,22 +8,22 @@ const MANIFEST_KEY    = '__sw-manifest__';
 const RETRY_DELAY     = 500;
 const MEDIA_EXT       = /\.(png|jpe?g|svg|gif|webp|ico|woff2?|ttf|otf|eot|mp4|webm|ogg|mp3|wav|pdf|json|jsonp)$/i;
 const NETWORK_ONLY    = /\.(php|ashx|api)$/i;
-const RESOURCES_SIZE  = 31010403;
+const RESOURCES_SIZE  = 31041843;
 const RESOURCES = {
 "/": {
 "name": "index.html",
 "size": 32362,
-"hash": "bd41ab9c2dcbce4a7bc89be6e7f7175b"
+"hash": "05343fe99ebd9dfcd25a9d44827d74e4"
 },
 "flutter_bootstrap.js": {
 "name": "flutter_bootstrap.js",
 "size": 9590,
-"hash": "a7b78eb1e4d567983020aa80083bbb8c"
+"hash": "c355e7c72aea059f21a83f0cbf88eba7"
 },
 "version.json": {
 "name": "version.json",
 "size": 90,
-"hash": "e358603bb324de451992a9193a700168"
+"hash": "adf02559dd4386cf02ab45bd902941ad"
 },
 "offline.html": {
 "name": "offline.html",
@@ -38,12 +38,12 @@ const RESOURCES = {
 "index.html": {
 "name": "index.html",
 "size": 32362,
-"hash": "bd41ab9c2dcbce4a7bc89be6e7f7175b"
+"hash": "05343fe99ebd9dfcd25a9d44827d74e4"
 },
 "main.dart.js": {
 "name": "main.dart.js",
-"size": 1778599,
-"hash": "fb2a8233cda768813b6687efece909ee"
+"size": 1792875,
+"hash": "da4e50f81963afb27cd0e7173f572f81"
 },
 "flutter.js": {
 "name": "flutter.js",
@@ -52,8 +52,8 @@ const RESOURCES = {
 },
 "flutter_service_worker.js": {
 "name": "flutter_service_worker.js",
-"size": 9378,
-"hash": "35b32ff89c5597ec291c4c25a5a4e4e0"
+"size": 9423,
+"hash": "313af2a01a7eeb5c7b65cba4e85fd6ee"
 },
 "favicon.png": {
 "name": "favicon.png",
@@ -97,8 +97,8 @@ const RESOURCES = {
 },
 "assets/NOTICES": {
 "name": "NOTICES",
-"size": 1693886,
-"hash": "a06a36c6df8b29ff5e749689cebda2a7"
+"size": 1698234,
+"hash": "5ff873d4f20af4ac4aca98cc525e4e92"
 },
 "assets/FontManifest.json": {
 "name": "FontManifest.json",
@@ -189,6 +189,11 @@ const RESOURCES = {
 "name": "fa-regular-400.ttf",
 "size": 68064,
 "hash": "262525e2081311609d1fdab966c82bfc"
+},
+"sw.js": {
+"name": "sw.js",
+"size": 12771,
+"hash": "aa433e53a407f7aa5004420d1c79fabd"
 },
 "canvaskit/skwasm.js": {
 "name": "skwasm.js",
