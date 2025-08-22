@@ -1,6 +1,6 @@
 'use strict';
 const CACHE_PREFIX    = 'app-cache';
-const CACHE_VERSION   = '1755852054015';
+const CACHE_VERSION   = '1755853568523';
 const CACHE_NAME      = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 const TEMP_CACHE      = `${CACHE_PREFIX}-temp-${CACHE_VERSION}`;
 const MANIFEST_CACHE  = `${CACHE_PREFIX}-manifest`;
@@ -8,22 +8,22 @@ const MANIFEST_KEY    = '__sw-manifest__';
 const RETRY_DELAY     = 500;
 const MEDIA_EXT       = /\.(png|jpe?g|svg|gif|webp|ico|woff2?|ttf|otf|eot|mp4|webm|ogg|mp3|wav|pdf|json|jsonp)$/i;
 const NETWORK_ONLY    = /\.(php|ashx|api)$/i;
-const RESOURCES_SIZE  = 31041843;
+const RESOURCES_SIZE  = 31041932;
 const RESOURCES = {
 "/": {
 "name": "index.html",
 "size": 32362,
-"hash": "05343fe99ebd9dfcd25a9d44827d74e4"
+"hash": "71060b0bd77ae150e7440b8eecbed1ff"
 },
 "flutter_bootstrap.js": {
 "name": "flutter_bootstrap.js",
 "size": 9590,
-"hash": "c355e7c72aea059f21a83f0cbf88eba7"
+"hash": "7ff61f7e1d737f11d67cd2e498e3055e"
 },
 "version.json": {
 "name": "version.json",
 "size": 90,
-"hash": "adf02559dd4386cf02ab45bd902941ad"
+"hash": "c568033c3c1e30e5684d2777148e3145"
 },
 "offline.html": {
 "name": "offline.html",
@@ -38,12 +38,12 @@ const RESOURCES = {
 "index.html": {
 "name": "index.html",
 "size": 32362,
-"hash": "05343fe99ebd9dfcd25a9d44827d74e4"
+"hash": "71060b0bd77ae150e7440b8eecbed1ff"
 },
 "main.dart.js": {
 "name": "main.dart.js",
 "size": 1792875,
-"hash": "da4e50f81963afb27cd0e7173f572f81"
+"hash": "b3d133e17ac4aedf9af6eb2c0f7e8490"
 },
 "flutter.js": {
 "name": "flutter.js",
@@ -53,7 +53,7 @@ const RESOURCES = {
 "flutter_service_worker.js": {
 "name": "flutter_service_worker.js",
 "size": 9423,
-"hash": "313af2a01a7eeb5c7b65cba4e85fd6ee"
+"hash": "7bc1c5266661350093d6491a12050a34"
 },
 "favicon.png": {
 "name": "favicon.png",
@@ -192,8 +192,8 @@ const RESOURCES = {
 },
 "sw.js": {
 "name": "sw.js",
-"size": 12771,
-"hash": "aa433e53a407f7aa5004420d1c79fabd"
+"size": 12860,
+"hash": "155df1087613273b0133ff0ae5acd3fe"
 },
 "canvaskit/skwasm.js": {
 "name": "skwasm.js",
